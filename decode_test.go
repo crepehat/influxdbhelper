@@ -1,4 +1,4 @@
-package influxdbhelper
+package influx
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	influxModels "github.com/influxdata/influxdb/models"
+	influxModels "github.com/influxdata/influxdb1-client/models"
 )
 
 func TestDecode(t *testing.T) {

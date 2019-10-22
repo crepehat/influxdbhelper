@@ -1,10 +1,10 @@
-package influxdbhelper
+package influx
 
 import (
 	"reflect"
 	"time"
 
-	influxModels "github.com/influxdata/influxdb/models"
+	influxModels "github.com/influxdata/influxdb1-client/models"
 	"github.com/mitchellh/mapstructure"
 )
 

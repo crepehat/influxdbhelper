@@ -1,4 +1,4 @@
-package influxdbhelper
+package influx
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	influxClient "github.com/influxdata/influxdb/client/v2"
+	influxClient "github.com/influxdata/influxdb1-client/v2"
 )
 
 var reRemoveExtraSpace = regexp.MustCompile(`\s\s+`)
@@ -106,6 +106,12 @@ func (c *helperClient) Write(bp influxClient.BatchPoints) error {
 // the UDP client.
 func (c *helperClient) Query(q influxClient.Query) (*influxClient.Response, error) {
 	return c.client.Query(q)
+}
+
+// Took this from their library to satisfy the interface
+func (c *helperClient) QueryAsChunk(q influxClient.Query) (*influxClient.ChunkedResponse, error) {
+	return c.client.QueryAsChunk(q)
+
 }
 
 // Close releases any resources a Client may be using.

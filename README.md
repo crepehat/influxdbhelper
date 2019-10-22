@@ -1,3 +1,5 @@
+# Library name change broke this, so i've fixed it in here
+
 # InfluxDb Helper Library
 
 > easily write and query InfluxDb from Go programs
