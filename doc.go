@@ -1,3 +1,3 @@
-// Package influx allows you to encode/decode InfluxDb data to/from
+// Package ifhelper allows you to encode/decode InfluxDb data to/from
 // Go structs -- similiar to JSON and MongoDb using Go struct field tags.
-package influx
+package ifhelper
