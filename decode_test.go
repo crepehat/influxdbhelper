@@ -163,6 +163,39 @@ func TestDecodeTime(t *testing.T) {
 	}
 }
 
+func TestDecodeTimeField(t *testing.T) {
+	data := influxModels.Row{
+		Name: "bla",
+		Columns: []string{
+			"time",
+			"value",
+		},
+		Values: make([][]interface{}, 0),
+		Tags:   map[string]string{},
+	}
+
+	type DecodeType struct {
+		Time  time.Time `influx:"time"`
+		Value time.Time `influx:"value"`
+	}
+
+	timeS := int64(1574169951428)
+	ti := time.Unix(0, timeS)
+
+	expected := []DecodeType{{ti, ti}}
+	data.Values = append(data.Values, []interface{}{timeS, timeS})
+	decoded := []DecodeType{}
+	err := decode([]influxModels.Row{data}, &decoded)
+
+	if err != nil {
+		t.Error("Error decoding: ", err)
+	}
+
+	if !reflect.DeepEqual(expected, decoded) {
+		t.Error("decoded value is not right")
+	}
+}
+
 func TestDecodeJsonNumber(t *testing.T) {
 	data := influxModels.Row{
 		Name: "bla",

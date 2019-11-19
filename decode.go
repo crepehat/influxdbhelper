@@ -1,6 +1,7 @@
 package ifhelper
 
 import (
+	"encoding/json"
 	"reflect"
 	"time"
 
@@ -41,6 +42,17 @@ func decode(influxResult []influxModels.Row, result interface{}) error {
 		DecodeHook: func(f reflect.Type, t reflect.Type, data interface{}) (interface{}, error) {
 			if t == reflect.TypeOf(time.Time{}) && f == reflect.TypeOf("") {
 				return time.Parse(time.RFC3339, data.(string))
+			}
+			if t == reflect.TypeOf(time.Time{}) && f == reflect.TypeOf(int64(0)) {
+				return time.Unix(0, data.(int64)), nil
+			}
+			if t == reflect.TypeOf(time.Time{}) && f == reflect.TypeOf(json.Number("0")) {
+				value := data.(json.Number)
+				nSec, err := value.Int64()
+				if err != nil {
+					return data, err
+				}
+				return time.Unix(0, nSec), nil
 			}
 
 			return data, nil
