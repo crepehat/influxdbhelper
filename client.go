@@ -1,7 +1,9 @@
 package ifhelper
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -45,8 +47,13 @@ type Client interface {
 	// WritePoint is used to write arbitrary data into InfluxDb.
 	WritePoint(data interface{}) error
 
+	// WritePoint is used to write batches of arbitrary data into InfluxDb.
+	WritePoints(points []interface{}) error
+
 	// WritePointTagsFields is used to write a point specifying tags and fields.
 	WritePointTagsFields(tags map[string]string, fields map[string]interface{}, t time.Time) error
+
+	AddPointTagsFieldsToBP(bp influxClient.BatchPoints, tags map[string]string, fields map[string]interface{}, t time.Time) error
 }
 
 type helperClient struct {
@@ -65,6 +72,14 @@ type helperUsing struct {
 	db          *usingValue
 	measurement *usingValue
 	timeField   *usingValue
+}
+
+type ClientConfig struct {
+	URL       string `json:"url"`
+	Port      int    `json:"port"`
+	User      string `json:"user"`
+	Password  string `json:"password"`
+	Precision string `json:"precision"`
 }
 
 // NewClient returns a new influxdbhelper influxClient given a url, user,
@@ -89,6 +104,23 @@ func NewClient(url, user, passwd, precision string) (Client, error) {
 	ret.client = client
 
 	return ret, err
+}
+
+func (c ClientConfig) NewClient() (Client, error) {
+	return NewClient(c.URL, c.User, c.Password, c.Precision)
+}
+
+func NewClientFromFile(fileName string) (Client, error) {
+	fh, err := os.Open(fileName)
+	if err != nil {
+		return nil, err
+	}
+	var config ClientConfig
+	err = json.NewDecoder(fh).Decode(&config)
+	if err != nil {
+		return nil, err
+	}
+	return config.NewClient()
 }
 
 // Ping checks that status of cluster, and will always return 0 time and no

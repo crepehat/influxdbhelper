@@ -12,7 +12,6 @@ func encode(d interface{}, timeField *usingValue) (t time.Time, tags map[string]
 	fields = make(map[string]interface{})
 	dValue := reflect.ValueOf(d)
 
-	fmt.Println(dValue.Kind())
 	if dValue.Kind() == reflect.Ptr {
 		dValue = reflect.Indirect(dValue)
 	}
@@ -52,7 +51,6 @@ func encode(d interface{}, timeField *usingValue) (t time.Time, tags map[string]
 
 		if fieldData.isField {
 			// store time type objects as unixnano - much better
-			// fmt.Println("field type", f.Type)
 			if f.Type() == reflect.TypeOf(time.Time{}) {
 				timeValue, ok := f.Interface().(time.Time)
 				if !ok {
