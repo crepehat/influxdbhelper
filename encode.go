@@ -12,6 +12,7 @@ func encode(d interface{}, timeField *usingValue) (t time.Time, tags map[string]
 	fields = make(map[string]interface{})
 	dValue := reflect.ValueOf(d)
 
+	fmt.Println(dValue.Kind())
 	if dValue.Kind() == reflect.Ptr {
 		dValue = reflect.Indirect(dValue)
 	}

@@ -221,6 +221,44 @@ func (c *helperClient) WritePoint(data interface{}) error {
 	return c.WritePointTagsFields(tags, fields, t)
 }
 
+// WritePoints writes all points at once to make dealing with large datasets more efficient
+func (c *helperClient) WritePoints(points []interface{}) error {
+	if c.using == nil || c.using.db == nil {
+		return fmt.Errorf("no db set for query")
+	}
+
+	bp, err := influxClient.NewBatchPoints(influxClient.BatchPointsConfig{
+		Database:  c.using.db.value,
+		Precision: c.precision,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	for _, data := range points {
+
+		t, tags, fields, measurement, err := encode(data, c.using.timeField)
+
+		if c.using.measurement == nil {
+			c.using.measurement = &usingValue{measurement, false}
+		}
+
+		if err != nil {
+			return err
+		}
+
+		err = c.AddPointTagsFieldsToBP(bp, tags, fields, t)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return c.client.Write(bp)
+
+}
+
 // WritePointTagsFields is used to write a point specifying tags and fields.
 func (c *helperClient) WritePointTagsFields(tags map[string]string, fields map[string]interface{}, t time.Time) (err error) {
 	if c.using == nil || c.using.db == nil {
@@ -258,4 +296,34 @@ func (c *helperClient) WritePointTagsFields(tags map[string]string, fields map[s
 	bp.AddPoint(pt)
 
 	return c.client.Write(bp)
+}
+
+// WritePointTagsFields is used to write a point specifying tags and fields.
+func (c *helperClient) AddPointTagsFieldsToBP(bp influxClient.BatchPoints, tags map[string]string, fields map[string]interface{}, t time.Time) (err error) {
+	if c.using == nil || c.using.db == nil {
+		return fmt.Errorf("no db set for query")
+	}
+
+	if c.using.measurement == nil {
+		return fmt.Errorf("no measurement set for query")
+	}
+
+	pt, err := influxClient.NewPoint(c.using.measurement.value, tags, fields, t)
+	if !c.using.db.retain {
+		c.using.db = nil
+	}
+	if !c.using.measurement.retain {
+		c.using.measurement = nil
+	}
+	if c.using.timeField != nil && !c.using.timeField.retain {
+		c.using.timeField = nil
+	}
+
+	if err != nil {
+		return err
+	}
+
+	bp.AddPoint(pt)
+
+	return
 }
