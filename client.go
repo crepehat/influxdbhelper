@@ -107,7 +107,7 @@ func NewClient(url, user, passwd, precision string) (Client, error) {
 }
 
 func (c ClientConfig) NewClient() (Client, error) {
-	return NewClient(c.URL, c.User, c.Password, c.Precision)
+	return NewClient(fmt.Sprintf("%s:%d", c.URL, c.Port), c.User, c.Password, c.Precision)
 }
 
 func NewClientFromFile(fileName string) (Client, error) {
