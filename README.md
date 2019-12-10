@@ -1,5 +1,3 @@
-# Library name change broke this, so i've fixed it in here
-
 # InfluxDb Helper Library
 
 > easily write and query InfluxDb from Go programs
@@ -7,13 +5,11 @@
 This library allows you to encode/decode InfluxDb data to/from
 Go structs -- similiar to JSON and MongoDb using Go struct field tags.
 
-See [GoDoc](https://godoc.org/github.com/cbrake/influxdbhelper) for more documentation.
-
 ## Install
 
 ```
 go get github.com/influxdata/influxdb/client/v2
-go get github.com/cbrake/influxdbhelper
+go get github.com/crepehat/iftool
 ```
 
 Note, this library currently does not work with the 1.7.x version of the InfluxDB client. It has
@@ -28,7 +24,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/cbrake/influxdbhelper"
+	"github.com/crepehat/iftool"
 	client "github.com/influxdata/influxdb/client/v2"
 )
 
@@ -162,16 +158,16 @@ use the Go reflect functionality.
 
 Todo:
 
-* [x] handle larger query datasets (multiple series, etc)
-* [x] add write capability (directly write Go structs into influxdb)
-* [x] add godoc documentation
-* [ ] get working with influxdb 1.7 client
-* [ ] see if still applicable for influxdb 2.x
-* [ ] decode/encode val0, val1, val2 fields in influx to Go array
-* [ ] use Go struct field tags to help build SELECT statement
-* [ ] optimize query for performace (pre-allocate slices, etc)
-* [ ] come up with a better name (indecode, etc)
-* [ ] finish error checking
+- [x] handle larger query datasets (multiple series, etc)
+- [x] add write capability (directly write Go structs into influxdb)
+- [x] add godoc documentation
+- [x] get working with influxdb 1.7 client
+- [ ] see if still applicable for influxdb 2.x
+- [ ] decode/encode val0, val1, val2 fields in influx to Go array
+- [ ] use Go struct field tags to help build SELECT statement
+- [x] optimize query for performace (pre-allocate slices, etc)
+- [x] come up with a better name (indecode, etc)
+- [ ] finish error checking
 
 Review/Pull requests welcome!
 

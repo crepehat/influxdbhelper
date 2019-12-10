@@ -1,4 +1,4 @@
-package ifhelper
+package iftool
 
 // this module is derrived from the mapstructure project:
 // https://github.com/mitchellh/mapstructure/error.go

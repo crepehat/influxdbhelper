@@ -1,4 +1,4 @@
-package ifhelper
+package iftool
 
 import (
 	"time"
